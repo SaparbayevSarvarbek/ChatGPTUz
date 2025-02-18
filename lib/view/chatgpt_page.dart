@@ -12,136 +12,105 @@ class ChatgptPage extends StatefulWidget {
 
 class _ChatgptPageState extends State<ChatgptPage> {
   final TextEditingController _controller = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
-  final List<Message> _msgs = [];
-  bool _isTyping = false;
+  List<String> messages = [];
+  bool isLoading = false;
 
-  void _sendMsg() async {
-    String text = _controller.text.trim();
-    if (text.isEmpty) return;
+  static const String _apiUrl = 'https://api.openai.com/v1/chat/completions';
+
+  Future<void> sendMessage() async {
+    String message = _controller.text.trim();
+    if (message.isEmpty) return;
 
     setState(() {
-      _msgs.insert(0, Message(true, text));
-      _isTyping = true;
+      messages.add("Siz: $message");
+      isLoading = true;
     });
-
-    _controller.clear();
-    _scrollToBottom();
 
     try {
       var response = await http.post(
-        Uri.parse("https://api.openai.com/v1/chat/completions"),
+        Uri.parse(_apiUrl),
         headers: {
-          "Authorization": "Bearer }",
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $CHATGPT_API_KEY',
         },
-        body: jsonEncode({
-          "model": "gpt-3.5-turbo",
-          "messages": [
-            {"role": "user", "content": text}
-          ]
+        body: json.encode({
+          'model': 'gpt-4o',
+          'messages': [
+            {
+              'role': 'user',
+              'content': message,
+            }
+          ],
         }),
       );
 
       if (response.statusCode == 200) {
-        var json = jsonDecode(response.body);
-        String botResponse =
-            json["choices"][0]["message"]["content"]?.toString()?.trim() ??
-                "Javob yo‘q!";
+        var responseData = json.decode(response.body);
+        String aiMessage = responseData['choices'][0]['message']['content'];
 
         setState(() {
-          _isTyping = false;
-          _msgs.insert(0, Message(false, botResponse));
+          messages.add("Gemini AI: $aiMessage");
+          isLoading = false;
         });
-
-        _scrollToBottom();
       } else {
-        print("API xatolik: ${response.statusCode}, Javob: ${response.body}");
-        _showError(
-            "Xatolik: ${response.statusCode} - API bilan muammo yuz berdi.");
+        setState(() {
+          print(response.body);
+          messages.add("Xatolik yuz berdi: ${response.statusCode} \n ${response.body}");
+          isLoading = false;
+        });
       }
     } catch (e) {
-      print("Xatolik: $e");
-      _showError("Internet yoki API ulanishida muammo bor!");
-    } finally {
       setState(() {
-        _isTyping = false;
+        messages.add("Xatolik: $e");
+        isLoading = false;
       });
     }
-  }
-
-  void _scrollToBottom() {
-    Future.delayed(const Duration(milliseconds: 300), () {
-      _scrollController.animateTo(
-        0.0,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeOut,
-      );
-    });
-  }
-
-  void _showError(String message) {
-    ScaffoldMessenger.of(context)
-        .showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("ChatGPT Bot")), body: Container());
-  }
-
-  Widget _inputField() {
-    return Row(
-      children: [
-        Expanded(
-          child: Padding(
+      appBar: AppBar(
+        title: Text('ChatGPT Ilovasi'),
+        backgroundColor: Colors.deepPurple,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(messages[index]),
+                );
+              },
+            ),
+          ),
+          if (isLoading) Center(child: CircularProgressIndicator()),
+          Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
-              width: double.infinity,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: TextField(
-                  controller: _controller,
-                  textCapitalization: TextCapitalization.sentences,
-                  onSubmitted: (value) => _sendMsg(),
-                  textInputAction: TextInputAction.send,
-                  showCursor: true,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "Xabar yozing...",
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(
+                      hintText: 'Savol kiriting...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  onPressed: sendMessage,
+                ),
+              ],
             ),
           ),
-        ),
-        InkWell(
-          onTap: _sendMsg,
-          child: Container(
-            height: 40,
-            width: 40,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              borderRadius: BorderRadius.circular(30),
-            ),
-            child: const Icon(Icons.send, color: Colors.white),
-          ),
-        ),
-        const SizedBox(width: 8),
-      ],
+        ],
+      ),
     );
   }
-}
-
-class Message {
-  final bool isSender;
-  final String msg;
-
-  Message(this.isSender, this.msg);
 }

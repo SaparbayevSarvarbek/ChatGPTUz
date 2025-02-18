@@ -2,6 +2,7 @@ import 'package:chatgptuz/consts.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
 class GeminiPage extends StatefulWidget {
@@ -31,8 +32,8 @@ class _GeminiPageState extends State<GeminiPage> {
     final model = GenerativeModel(model: 'gemini-pro', apiKey: GEMINI_API_KEY);
 
     try {
-      final response =
-          await model.generateContent([Content.text(message.text)]);
+      final response = await model.generateContent(
+          [Content.text(message.text)]);
       String aiResponse = response.text ?? "Javob kelmadi.";
 
       setState(() {
@@ -52,6 +53,20 @@ class _GeminiPageState extends State<GeminiPage> {
       });
     }
   }
+ Future<void> pickImage() async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? pickedFile = await picker.pickImage(
+        source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final ChatMessage imageMessage = ChatMessage(
+        user: user,
+        createdAt: DateTime.now(),
+      );
+
+      sendMessage(imageMessage);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +84,12 @@ class _GeminiPageState extends State<GeminiPage> {
         ),
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.photo),
+            onPressed: pickImage,
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -80,9 +101,9 @@ class _GeminiPageState extends State<GeminiPage> {
               messages: messages,
               onSend: sendMessage,
               messageOptions: MessageOptions(
-                  currentUserContainerColor: Colors.blueAccent,
-                  containerColor: Colors.grey.shade200,
-                  textColor: Colors.black,
+                currentUserContainerColor: Colors.blueAccent,
+                containerColor: Colors.grey.shade200,
+                textColor: Colors.black,
               ),
             ),
           ),
