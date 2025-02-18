@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:chatgptuz/models/message.dart';
+import 'package:chatgptuz/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -16,9 +15,6 @@ class _ChatgptPageState extends State<ChatgptPage> {
   final ScrollController _scrollController = ScrollController();
   final List<Message> _msgs = [];
   bool _isTyping = false;
-
-  final String _apiKey =
-      "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";
 
   void _sendMsg() async {
     String text = _controller.text.trim();
@@ -36,7 +32,7 @@ class _ChatgptPageState extends State<ChatgptPage> {
       var response = await http.post(
         Uri.parse("https://api.openai.com/v1/chat/completions"),
         headers: {
-          "Authorization": "Bearer $_apiKey",
+          "Authorization": "Bearer }",
           "Content-Type": "application/json"
         },
         body: jsonEncode({
