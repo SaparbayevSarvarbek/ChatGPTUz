@@ -1,6 +1,8 @@
 import 'package:chatgptuz/view/chatgpt_page.dart';
 import 'package:chatgptuz/view/gemini_page.dart';
+import 'package:chatgptuz/view/info_page.dart';
 import 'package:flutter/material.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -14,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   final List<Widget> _pages = [
     ChatgptPage(),
     GeminiPage(),
-    Center(child: Text("Uchinchi sahifa")),
+    InfoPage(),
   ];
 
   void _onSelectPage(int index) {
@@ -39,7 +41,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Icon(Icons.account_circle, size: 50, color: Colors.white),
                   SizedBox(height: 10),
-                  Text("Foydalanuvchi", style: TextStyle(color: Colors.white, fontSize: 18)),
+                  Text("Foydalanuvchi",
+                      style: TextStyle(color: Colors.white, fontSize: 18)),
                 ],
               ),
             ),

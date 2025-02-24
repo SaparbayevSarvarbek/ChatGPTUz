@@ -32,8 +32,8 @@ class _GeminiPageState extends State<GeminiPage> {
     final model = GenerativeModel(model: 'gemini-pro', apiKey: GEMINI_API_KEY);
 
     try {
-      final response = await model.generateContent(
-          [Content.text(message.text)]);
+      final response =
+          await model.generateContent([Content.text(message.text)]);
       String aiResponse = response.text ?? "Javob kelmadi.";
 
       setState(() {
@@ -53,10 +53,11 @@ class _GeminiPageState extends State<GeminiPage> {
       });
     }
   }
- Future<void> pickImage() async {
+
+  Future<void> pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-        source: ImageSource.gallery);
+    final XFile? pickedFile =
+        await picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       final ChatMessage imageMessage = ChatMessage(

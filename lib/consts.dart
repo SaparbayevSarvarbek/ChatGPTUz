@@ -1,1 +1,4 @@
-const String GEMINI_API_KEY="AIzaSyCMO2dgyDp5f27DACvfK1Em43MvgwfX6dE";
+const String GEMINI_API_KEY = "AIzaSyCMO2dgyDp5f27DACvfK1Em43MvgwfX6dE";
+
+const String CHATGPT_API_KEY =
+    "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";
