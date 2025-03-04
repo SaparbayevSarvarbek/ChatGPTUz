@@ -1,70 +1,49 @@
-import 'package:chatgptuz/view/chatgpt_page.dart';
-import 'package:chatgptuz/view/gemini_page.dart';
-import 'package:chatgptuz/view/info_page.dart';
+import 'package:chatgptuz/view/chatgpt_pages/chat_page.dart';
+import 'package:chatgptuz/view/chatgpt_pages/chatgpt_home_page.dart';
+import 'package:chatgptuz/view/gemini_pages/gemini_page.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
-
-  final List<Widget> _pages = [
-    ChatgptPage(),
-    GeminiPage(),
-    InfoPage(),
-  ];
-
-  void _onSelectPage(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    Navigator.pop(context); // Drawer menyusini yopish
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Home Page")),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+      appBar: AppBar(
+        title: Text('Home page'),
+      ),
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 16.0),
+        width: MediaQuery.of(context).size.width,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: [
-            DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.account_circle, size: 50, color: Colors.white),
-                  SizedBox(height: 10),
-                  Text("Foydalanuvchi",
-                      style: TextStyle(color: Colors.white, fontSize: 18)),
-                ],
-              ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ChatgptHomePage()));
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green, foregroundColor: Colors.white),
+              child: Text('ChatGpt'),
             ),
-            ListTile(
-              leading: Icon(Icons.chat),
-              title: Text("ChatGPT"),
-              onTap: () => _onSelectPage(0),
+            SizedBox(
+              height: 20,
             ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text("Sozlamalar"),
-              onTap: () => _onSelectPage(1),
-            ),
-            ListTile(
-              leading: Icon(Icons.info),
-              title: Text("Haqida"),
-              onTap: () => _onSelectPage(2),
-            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => GeminiPage()));
+              },
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  foregroundColor: Colors.white),
+              child: Text('Gemini'),
+            )
           ],
         ),
       ),
-      body: _pages[_selectedIndex],
     );
   }
 }
