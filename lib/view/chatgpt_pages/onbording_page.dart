@@ -12,7 +12,7 @@ class OnbordingPage extends StatefulWidget {
 class _OnbordingPageState extends State<OnbordingPage> {
   final PageController _controller = PageController();
   int _currentIndex = 0;
-  String button = 'Next';
+  String button = 'Keyingi';
   final List<OnBoardingModel> _dataList = [
     OnBoardingModel(
         Icons.sunny,
@@ -69,7 +69,7 @@ class _OnbordingPageState extends State<OnbordingPage> {
               style: TextStyle(fontSize: 24.0),
             ),
             Text(
-              'ChatGPT',
+              'ChatGPT UZ',
               style: TextStyle(fontSize: 24.0),
             ),
             SizedBox(
@@ -84,8 +84,8 @@ class _OnbordingPageState extends State<OnbordingPage> {
                       setState(() {
                         _currentIndex = index;
                         _currentIndex == _dataList.length - 1
-                            ? button = 'Done'
-                            : button = 'Next';
+                            ? button = 'Boshlash'
+                            : button = 'Keyingi';
                       });
                     },
                     itemBuilder: (context, index) {
