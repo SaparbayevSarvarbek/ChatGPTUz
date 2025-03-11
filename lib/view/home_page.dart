@@ -1,4 +1,5 @@
 import 'package:chatgptuz/database/database_helper.dart';
+import 'package:chatgptuz/view/ai_page.dart';
 import 'package:chatgptuz/view/chatgpt_pages/chatgpt_home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -82,6 +83,44 @@ class _HomePageState extends State<HomePage> {
             ),
           );
         },
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text("Foydalanuvchi ismi"),
+              accountEmail: Text("email@example.com"),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage:
+                    AssetImage('assets/profile.png'), // Profil rasmi
+              ),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.book, color: Colors.blue),
+              title: Text('Darslar'),
+              onTap: () {},
+            ),
+            ListTile(
+              leading: Icon(Icons.smart_toy, color: Colors.green),
+              title: Text('Sun’iy Intellekt'),
+              onTap: () {
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => AiPage()));
+              },
+            ),
+            Divider(), // Chiziq
+            ListTile(
+              leading: Icon(Icons.exit_to_app, color: Colors.red),
+              title: Text('Chiqish'),
+              onTap: () {
+                // Logout qilish yoki ilovadan chiqish
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
