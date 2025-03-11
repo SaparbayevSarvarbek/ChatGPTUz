@@ -33,12 +33,10 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<Message?> _sendMessage(List<Map<String, String>> messages) async {
     final url = Uri.parse('https://api.openai.com/v1/chat/completions');
-    final apiKey = Provider
-        .of<ConversationProvider>(context, listen: false)
-        .yourApiKey;
-    final proxy = Provider
-        .of<ConversationProvider>(context, listen: false)
-        .yourProxy;
+    final apiKey =
+        Provider.of<ConversationProvider>(context, listen: false).yourApiKey;
+    final proxy =
+        Provider.of<ConversationProvider>(context, listen: false).yourProxy;
     final converter = JsonUtf8Encoder();
 
     // send all current conversation to OpenAI
@@ -49,23 +47,18 @@ class _ChatPageState extends State<ChatPage> {
     // _client.findProxy = HttpClient.findProxyFromEnvironment;
     if (proxy != "") {
       _client.findProxy = (url) {
-        return HttpClient.findProxyFromEnvironment(
-            url, environment: {
-          "http_proxy": proxy,
-          "https_proxy": proxy
-        });
+        return HttpClient.findProxyFromEnvironment(url,
+            environment: {"http_proxy": proxy, "https_proxy": proxy});
       };
     }
 
     try {
-      return await _client.postUrl(url).then(
-              (HttpClientRequest request) {
-            request.headers.set('Content-Type', 'application/json');
-            request.headers.set('Authorization', 'Bearer $apiKey');
-            request.add(converter.convert(body));
-            return request.close();
-          }
-      ).then((HttpClientResponse response) async {
+      return await _client.postUrl(url).then((HttpClientRequest request) {
+        request.headers.set('Content-Type', 'application/json');
+        request.headers.set('Authorization', 'Bearer $apiKey');
+        request.add(converter.convert(body));
+        return request.close();
+      }).then((HttpClientResponse response) async {
         var retBody = await response.transform(utf8.decoder).join();
         print('xatolik ${response.statusCode} \n ${response}');
         if (response.statusCode == 200) {
@@ -75,8 +68,8 @@ class _ChatPageState extends State<ChatPage> {
             final completion = completions[0];
             final content = completion['message']['content'] as String;
             // delete all the prefix '\n' in content
-            final contentWithoutPrefix = content.replaceFirst(
-                RegExp(r'^\n+'), '');
+            final contentWithoutPrefix =
+                content.replaceFirst(RegExp(r'^\n+'), '');
             return Message(
                 senderId: systemSender.id, content: contentWithoutPrefix);
           }
@@ -93,7 +86,6 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 
-  //scroll to last message
   void _scrollToLastMessage() {
     final double height = _scrollController.position.maxScrollExtent;
     final double lastMessageHeight =
@@ -104,7 +96,6 @@ class _ChatPageState extends State<ChatPage> {
       curve: Curves.easeOut,
     );
   }
-
 
   void _sendMessageAndAddToChat() async {
     final text = _textController.text.trim();
@@ -121,8 +112,7 @@ class _ChatPageState extends State<ChatPage> {
       _scrollToLastMessage();
 
       final assistantMessage = await _sendMessage(
-          Provider
-              .of<ConversationProvider>(context, listen: false)
+          Provider.of<ConversationProvider>(context, listen: false)
               .currentConversationMessages);
       if (assistantMessage != null) {
         setState(() {
@@ -137,130 +127,128 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   @override
-  Widget build(BuildContext context,) {
-    return
-      GestureDetector(
-        onTap: () => FocusScope.of(context).unfocus(),
-        onVerticalDragDown: (_) => FocusScope.of(context).unfocus(),
-        child: Scaffold(
-          // resizeToAvoidBottomInset: true,
-          body: Column(
-            children: [
-              Expanded(
-                child: Consumer<ConversationProvider>(
-                  builder: (context, conversationProvider, child) {
-                    return ListView.builder(
-                      controller: _scrollController,
-                      itemCount: conversationProvider.currentConversationLength,
-                      itemBuilder: (BuildContext context, int index) {
-                        Message message = conversationProvider
-                            .currentConversation.messages[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0,
-                              horizontal: 16.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (message.senderId != userSender.id)
-                                CircleAvatar(
-                                  backgroundImage:
-                                  AssetImage(systemSender.avatarAssetPath),
-                                  radius: 16.0,
-                                )
-                              else
-                                const SizedBox(width: 24.0),
-                              const SizedBox(width: 8.0),
-                              Expanded(
-                                child: Align(
-                                  alignment: message.senderId == userSender.id
-                                      ? Alignment.centerRight
-                                      : Alignment.centerLeft,
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 16.0),
-                                    decoration: BoxDecoration(
-                                      color: message.senderId == userSender.id
-                                          ? const Color(0xff55bb8e)
-                                          : Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(16.0),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                          blurRadius: 5,
-                                          offset: const Offset(0, 2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Text(
-                                      message.content,
-                                      style: TextStyle(
-                                        color: message.senderId == userSender.id
-                                            ? Colors.white
-                                            : Colors.black,
+  Widget build(
+    BuildContext context,
+  ) {
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).unfocus(),
+      onVerticalDragDown: (_) => FocusScope.of(context).unfocus(),
+      child: Scaffold(
+        // resizeToAvoidBottomInset: true,
+        body: Column(
+          children: [
+            Expanded(
+              child: Consumer<ConversationProvider>(
+                builder: (context, conversationProvider, child) {
+                  return ListView.builder(
+                    controller: _scrollController,
+                    itemCount: conversationProvider.currentConversationLength,
+                    itemBuilder: (BuildContext context, int index) {
+                      Message message = conversationProvider
+                          .currentConversation.messages[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (message.senderId != userSender.id)
+                              CircleAvatar(
+                                backgroundImage:
+                                    AssetImage(systemSender.avatarAssetPath),
+                                radius: 16.0,
+                              )
+                            else
+                              const SizedBox(width: 24.0),
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Align(
+                                alignment: message.senderId == userSender.id
+                                    ? Alignment.centerRight
+                                    : Alignment.centerLeft,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 8.0, horizontal: 16.0),
+                                  decoration: BoxDecoration(
+                                    color: message.senderId == userSender.id
+                                        ? const Color(0xff55bb8e)
+                                        : Colors.grey[200],
+                                    borderRadius: BorderRadius.circular(16.0),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.05),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 2),
                                       ),
+                                    ],
+                                  ),
+                                  child: Text(
+                                    message.content,
+                                    style: TextStyle(
+                                      color: message.senderId == userSender.id
+                                          ? Colors.white
+                                          : Colors.black,
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 8.0),
-                              if (message.senderId == userSender.id)
-                                CircleAvatar(
-                                  backgroundImage:
-                                  AssetImage(userSender.avatarAssetPath),
-                                  radius: 16.0,
-                                )
-                              else
-                                const SizedBox(width: 24.0),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
+                            ),
+                            const SizedBox(width: 8.0),
+                            if (message.senderId == userSender.id)
+                              CircleAvatar(
+                                backgroundImage:
+                                    AssetImage(userSender.avatarAssetPath),
+                                radius: 16.0,
+                              )
+                            else
+                              const SizedBox(width: 24.0),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
+            ),
 
-              // input box
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(32.0),
-                ),
-                margin:
-                const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
-                padding:
-                const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: _textController,
-                        decoration: const InputDecoration.collapsed(
-                            hintText: 'Type your message...'),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.send),
-                      onPressed:
-                      // listen to apikey to see if changed
-                      Provider
-                          .of<ConversationProvider>(context, listen: true)
-                          .yourApiKey == "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"
-                          ? () {
-                        showRenameDialog(context);
-                      }
-                          : () {
-                        _sendMessageAndAddToChat();
-                      },
-
-
-                    ),
-                  ],
-                ),
+            // input box
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(32.0),
               ),
-            ],
-          ),
+              margin:
+                  const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 0.0, horizontal: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _textController,
+                      decoration: const InputDecoration.collapsed(
+                          hintText: 'Type your message...'),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.send),
+                    onPressed:
+                        Provider.of<ConversationProvider>(context, listen: true)
+                                    .yourApiKey ==
+                                "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"
+                            ? () {
+                                _sendMessageAndAddToChat();
+                              }
+                            : () {
+                                showRenameDialog(context);
+                              },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:chatgptuz/view/chatgpt_pages/chat_page.dart';
 import 'package:chatgptuz/view/chatgpt_pages/chatgpt_home_page.dart';
+import 'package:chatgptuz/view/chatgpt_pages/onbording_page.dart';
 import 'package:chatgptuz/view/gemini_pages/gemini_page.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +23,7 @@ class HomePage extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ChatgptHomePage()));
+                    MaterialPageRoute(builder: (context) => OnbordingPage()));
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green, foregroundColor: Colors.white),

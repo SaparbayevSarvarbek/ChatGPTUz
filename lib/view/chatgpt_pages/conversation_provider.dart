@@ -146,4 +146,4 @@ const String model = "gpt-3.5-turbo";
 final Sender systemSender =
     Sender(name: 'System', avatarAssetPath: 'assets/images/chatgpt_logo.png');
 final Sender userSender =
-    Sender(name: 'User', avatarAssetPath: 'assets/images/profile.png');
+    Sender(name: 'User', avatarAssetPath: 'assets/images/profile.jpg');
