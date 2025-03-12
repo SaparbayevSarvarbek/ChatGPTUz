@@ -1,3 +1,4 @@
+import 'package:chatgptuz/view/gemini_pages/gemini_page.dart';
 import 'package:chatgptuz/view/image_ai_pages/image_ai.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,13 @@ class _AiPageState extends State<AiPage> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ImageAi()));
                 },
-                child: Text("Image AI"))
+                child: Text("Image AI")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => GeminiPage()));
+                },
+                child: Text("Gemini AI")),
           ],
         ),
       ),
