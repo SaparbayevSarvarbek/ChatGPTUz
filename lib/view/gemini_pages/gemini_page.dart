@@ -18,18 +18,29 @@ class _GeminiPageState extends State<GeminiPage> {
   final List<ChatMessage> messages = [];
   final ChatUser user = ChatUser(id: "1", firstName: "Siz");
   final ChatUser bot = ChatUser(id: "2", firstName: "Gemini");
-  final TextEditingController _messageController = TextEditingController();
+  final TextEditingController _messageController =
+      TextEditingController();
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
 
   void sendMessage(String text) async {
+    if (text.trim().isEmpty) return;
+
     final ChatMessage userMessage = ChatMessage(
       text: text,
       user: user,
       createdAt: DateTime.now(),
     );
 
-    setState(() {
-      messages.insert(0, userMessage);
-    });
+    if (mounted) {
+      setState(() {
+        messages.insert(0, userMessage);
+      });
+    }
 
     String response = await geminiService.sendMessage(text);
 
@@ -39,9 +50,11 @@ class _GeminiPageState extends State<GeminiPage> {
       createdAt: DateTime.now(),
     );
 
-    setState(() {
-      messages.insert(0, botMessage);
-    });
+    if (mounted) {
+      setState(() {
+        messages.insert(0, botMessage);
+      });
+    }
   }
 
   void sendImage(File image) async {
@@ -58,9 +71,11 @@ class _GeminiPageState extends State<GeminiPage> {
       ],
     );
 
-    setState(() {
-      messages.insert(0, userMessage);
-    });
+    if (mounted) {
+      setState(() {
+        messages.insert(0, userMessage);
+      });
+    }
 
     String response = await geminiService.sendImage(image);
 
@@ -70,9 +85,11 @@ class _GeminiPageState extends State<GeminiPage> {
       createdAt: DateTime.now(),
     );
 
-    setState(() {
-      messages.insert(0, botMessage);
-    });
+    if (mounted) {
+      setState(() {
+        messages.insert(0, botMessage);
+      });
+    }
   }
 
   Future<void> pickImage() async {
@@ -96,7 +113,8 @@ class _GeminiPageState extends State<GeminiPage> {
           _messageController.clear();
         },
         inputOptions: InputOptions(
-          textController: _messageController, // Eski inputFieldController o‘rniga shu
+          textController: _messageController,
+          // ✅ To‘g‘ri controller ishlatilmoqda
           trailing: [
             IconButton(
               icon: Icon(Icons.image),
